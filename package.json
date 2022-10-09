@@ -1,0 +1,29 @@
+{
+  "name": "healthstock-products",
+  "version": "1.0.0",
+  "description": "Serviço para cadastro e gerenciamento de produtos",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/joaogabrieloliveira/healthstock-products"
+  },
+  "keywords": [
+    "product",
+    "health",
+    "saude",
+    "cadastro",
+    "register",
+    "service"
+  ],
+  "author": "HealthStock",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "typeorm": "^0.3.10"
+  }
+}
