@@ -2,6 +2,7 @@ import express from 'express';
 import { getAllCategories, getCategory, saveCategory } from './service/Category.js';
 import { getAllPackageTypes, getPackageType, savePackageType } from './service/PackageType.js';
 import { getAllProducts, getProduct, saveProduct } from './service/Product.js';
+import { getAllSuppliersCatalog, getSupplierCatalog, saveSupplierCatalog } from './service/SupplierCatalog.js';
 
 const router = express.Router();
 
@@ -16,6 +17,9 @@ router.post( '/product', saveProduct);
 router.get( '/packagetype', getAllPackageTypes);
 router.get( '/packagetype/:id', getPackageType);
 router.post('/packagetype', savePackageType);
+
+router.get( '/suppliercatalog/:id', getAllSuppliersCatalog);
+router.post('/suppliercatalog', saveSupplierCatalog);
 
 
 export default router;
