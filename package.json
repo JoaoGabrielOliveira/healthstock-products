@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "test",
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/index.js",
+    "criarEndpoint": "node src/scripts/criar_endpoint.js"
   },
   "repository": {
     "type": "git",
