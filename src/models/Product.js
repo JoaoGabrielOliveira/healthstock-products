@@ -1,7 +1,8 @@
 import { BaseEntity, EntitySchema } from "typeorm";
+import Category from "./Category.js";
 
 export default class Product extends BaseEntity{
-    id; name; description; categoryId;
+    id; name; description; categoryId; category;
 
     constructor(body){
         super();
@@ -29,17 +30,15 @@ export const Schema = new EntitySchema({
         description: {
             type: 'text',
             nullable: true
-        },
+        }
     },
     relations: {
         category: {
             type: 'many-to-one',
             target: 'Category',
             joinColumn: {
-                name: 'category_id'
-            },
-            cascade: true,
-            inverseSide: 'product'
+                name: 'categoryId'
+            }
           },
     }
 })

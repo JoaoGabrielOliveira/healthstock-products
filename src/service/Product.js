@@ -1,5 +1,6 @@
 import Product from "../models/Product.js";
 import { SendEvent } from '../config/index.js';
+import Category from "../models/Category.js";
 
 export async function saveProduct(req, res, next){
     const product = new Product(req.body);
@@ -25,7 +26,7 @@ export async function saveProduct(req, res, next){
 
 export async function getAllProducts(req, res) {
     try {
-        const allProducts = await Product.find();
+        const allProducts = await Product.find({relations:{ category: true}});
         SendEvent(`Pegou todas as categoria com sucesso!`);
         res.status(200).send(allProducts);
     } catch (error) {
