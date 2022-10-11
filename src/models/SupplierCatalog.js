@@ -40,5 +40,21 @@ export const Schema = new EntitySchema({
             type: 'integer',
             nullable: false
         }
+    },
+    relations: {
+        product: {
+            type: 'many-to-one',
+            target: 'Product',
+            joinColumn: {
+                name: 'productId'
+            }
+        },
+        packageType: {
+            type: 'many-to-one',
+            target: 'Product',
+            joinColumn: {
+                name: 'productId'
+            }
+        }
     }
 })
