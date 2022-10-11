@@ -38,5 +38,7 @@ export const DataSource = new typeorm.DataSource({
      "message":message,
      "level":level,
      "data": data
+ }).catch(err => {
+  console.log("Serviço de eventos está fora do ar!", err);
  })
  }
