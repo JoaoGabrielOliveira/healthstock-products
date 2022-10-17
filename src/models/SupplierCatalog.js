@@ -3,8 +3,7 @@ import PackageType from "./PackageType.js";
 import Product from './Product.js';
 
 export default class SupplierCatalog extends BaseEntity{
-    id; name; description; product; packageType;
-    productId; supplierId; packageTypeId;
+    id; name; description; product; packageType; photos;
 
     constructor(body){
         super();
@@ -34,7 +33,8 @@ export const Schema = new EntitySchema({
         },
         description: {
             type: 'text',
-            nullable: true
+            nullable: false,
+            default: ''
         },
         supplierId: {
             type: 'integer',
@@ -45,16 +45,15 @@ export const Schema = new EntitySchema({
         product: {
             type: 'many-to-one',
             target: 'Product',
-            joinColumn: {
-                name: 'productId'
-            }
+            nullable: false
         },
         packageType: {
             type: 'many-to-one',
-            target: 'Product',
+            target: 'PackageType',
             joinColumn: {
-                name: 'productId'
-            }
+                name: 'packageTypeId'
+            },
+            nullable: false
         }
     }
 })
