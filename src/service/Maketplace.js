@@ -1,12 +1,31 @@
+import { SendEvent } from "../config/index.js";
+import Photo from "../models/Photo.js";
 import SupplierCatalog from "../models/SupplierCatalog.js";
 
 export async function getMarketPlace(req, res, next){
-    const catalog = await SupplierCatalog.find({select: { supplierId:true, name: true, description: true }});
+    try {
+        SendEvent("Pegando produtos dos catalogos...");
+        const catalog = await SupplierCatalog.find({select: { id:true, supplierId:true, name: true, description: true }});
+        SendEvent(`Pegou todos os catalogos com sucesso!`);
+        res.status(200).send(catalog);
+    } catch (error) {
+        SendEvent("Erro ao pegar catalogos", error, 'error');
+        res.status(500).send(error);
+    } finally { next() }
+}
 
-    /*res.status(200).send([
-        { name:"Siringa", description: "Se", photo: "https://http2.mlstatic.com/D_NQ_NP_856031-MLB47273532229_082021-O.webp" },
-        { name:"Siringa", description: "Se", photo: "https://http2.mlstatic.com/D_NQ_NP_856031-MLB47273532229_082021-O.webp" }
-    ]);*/
+export async function getProductFromMarketPlace(req, res, next){
+    try {
+        SendEvent("Pegando produtos dos catalogos...");
 
-    res.status(200).send(catalog)
+        const catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true }, where: {id: req.params.id}});
+        catalog.photos = await Photo.find({ select:{urlData:true, blobData:true, title:true}, loadRelationIds:true, where: {supplierCatalog : catalog.id}});
+
+        SendEvent(`Pegou o catalogo ${catalog.id} com sucesso!`);
+
+        res.status(200).send(catalog);
+    } catch (error) {
+        SendEvent("Erro ao pegar catalogo " + req.params.id, error, 'error');
+        res.status(500).send(error);
+    } finally { next() }
 }

@@ -3,11 +3,12 @@ import { getAllCategories, getCategory, saveCategory } from './service/Category.
 import { getAllPackageTypes, getPackageType, savePackageType } from './service/PackageType.js';
 import { getAllProducts, getProduct, saveProduct } from './service/Product.js';
 import { getAllSuppliersCatalog, getSupplierCatalog, saveSupplierCatalog } from './service/SupplierCatalog.js';
-import { getMarketPlace } from './service/Maketplace.js';
+import { getMarketPlace, getProductFromMarketPlace } from './service/Maketplace.js';
 
 const router = express.Router();
 
 router.get('/marketplace', getMarketPlace);
+router.get('/marketplace/:id', getProductFromMarketPlace);
 
 router.post('/category', saveCategory);
 router.get( '/category', getAllCategories);
