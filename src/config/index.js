@@ -32,6 +32,7 @@ export const DataSource = new typeorm.DataSource({
  }
  
  export async function SendEvent(message, data, level = 'info'){
+  console.log(`[${level}] ${message}`);
    axios.post(env.LOG_ENDPOINT, {
      "origin":'products',
      "host":`${env.HOST}:${env.PORT}`,
