@@ -1,18 +1,29 @@
 import { BaseEntity, EntitySchema } from "typeorm";
 import PackageType from "./PackageType.js";
 import Product from './Product.js';
+import SupplierCatalogPhoto from "./SupplierCatalogPhoto.js";
 
 export default class SupplierCatalog extends BaseEntity{
-    id; name; description; product; packageType; photos;
+    id; name; description; photos;
+    productId; supplierId; packageTypeId; profilePhotoId;
 
     constructor(body){
         super();
         this.name = body?.name;
         this.description = body?.description;
+        this.supplierId = body?.supplierId;
 
         this.productId = body?.productId;
-        this.supplierId = body?.supplierId;
         this.packageTypeId = body?.packageTypeId;
+    }
+
+    getPhotos(){
+        if(!this.photos)
+            this.photos = SupplierCatalogPhoto.find({where: {
+                supplierCatalog: this
+            }});
+
+        return this.photos;
     }
 }
 
@@ -44,16 +55,14 @@ export const Schema = new EntitySchema({
     relations: {
         product: {
             type: 'many-to-one',
-            target: 'Product',
-            nullable: false
+            target: 'Product'
         },
         packageType: {
             type: 'many-to-one',
             target: 'PackageType',
             joinColumn: {
                 name: 'packageTypeId'
-            },
-            nullable: false
+            }
         }
     }
 })

@@ -11,10 +11,9 @@ export async function saveSupplierCatalog(req, res, next){
         res.status(201).send(supplierCatalog);
     } catch (error) {
         if(error.code == 'SQLITE_CONSTRAINT'){
-            let message = ``;
-            console.log(error);
+            let message = "Erro com body da requisão!";
             SendEvent(message, supplierCatalog, 'warn');
-            res.status(400).send({message: message});
+            res.status(400).send({message: message, error: error.message});
         } else {
             SendEvent("Erro ao salvar 'Catalogo de Fornecedor'", error, 'error');
             res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
