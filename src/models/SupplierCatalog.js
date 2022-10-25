@@ -63,6 +63,11 @@ export const Schema = new EntitySchema({
             joinColumn: {
                 name: 'packageTypeId'
             }
+        },
+        supplierCatalogPhotos: {
+            type: 'many-to-one',
+            target: 'SupplierCatalogPhoto',
+            inverseSide: 'supplierCatalogPhoto'
         }
     }
 })
