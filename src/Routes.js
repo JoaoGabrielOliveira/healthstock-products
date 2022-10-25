@@ -4,6 +4,7 @@ import { getAllPackageTypes, getPackageType, savePackageType } from './service/P
 import { getAllProducts, getProduct, saveProduct } from './service/Product.js';
 import { getAllSuppliersCatalog, getSupplierCatalog, saveSupplierCatalog } from './service/SupplierCatalog.js';
 import { getMarketPlace, getProductFromMarketPlace } from './service/Maketplace.js';
+import { getAllPhotosOfSupplierCatalog, getSupplierCatalogPhoto, saveSupplierCatalogPhoto } from './service/SupplierCatalogPhoto.js';
 
 const router = express.Router();
 
@@ -24,6 +25,10 @@ router.post('/packagetype', savePackageType);
 
 router.get( '/suppliercatalog/:id', getAllSuppliersCatalog);
 router.post('/suppliercatalog', saveSupplierCatalog);
+
+router.post( '/suppliercatalog/:id/photos', saveSupplierCatalogPhoto);
+router.get( '/suppliercatalog/:id/photos', getAllPhotosOfSupplierCatalog);
+router.get( '/suppliercatalog/:id/photos/:photoId', getSupplierCatalogPhoto);
 
 
 export default router;
