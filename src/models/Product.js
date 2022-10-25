@@ -39,6 +39,13 @@ export const Schema = new EntitySchema({
             joinColumn: {
                 name: 'categoryId'
             }
-          },
+        },
+        productPhoto: {
+            type: 'one-to-one',
+            target: 'ProductPhoto',
+            joinColumn: {
+                name: 'productPhotoId'
+            }
+        },
     }
 })
