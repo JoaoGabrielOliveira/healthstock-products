@@ -1,6 +1,6 @@
 {
   "name": "healthstock-products",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Serviço para cadastro e gerenciamento de produtos",
   "type": "module",
   "main": "src/index.js",
