@@ -34,7 +34,7 @@ export async function getAllProducts(req, res) {
         }
 
         if(search){
-            const searchProducts = await Product.find({
+            const searchProducts = await Product.findAndCount({
                 take: limit,
                 skip: offset,
                 order: {
@@ -44,8 +44,6 @@ export async function getAllProducts(req, res) {
                     name: Like(`%${search}%`),
                 }
             });
-
-            //search['total'] = search.lenght;
 
             res.status(200).send(searchProducts);
             return;
