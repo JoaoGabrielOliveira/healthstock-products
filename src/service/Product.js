@@ -26,7 +26,18 @@ export async function saveProduct(req, res, next){
 
 export async function getAllProducts(req, res) {
     try {
-        const allProducts = await Product.find({relations:{ category: true}});
+        const { limit, offset, total } = req.query;
+        console.log(total);
+        if(total == ""){
+            res.status(200).send({total: await Product.count()});
+            return;
+        }
+
+        const allProducts = await Product.find({
+            take: limit,
+            skip: offset
+        });
+
         SendEvent(`Pegou todas as categoria com sucesso!`);
         res.status(200).send(allProducts);
     } catch (error) {
