@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 import { SendEvent } from '../config/index.js';
 import Category from "../models/Category.js";
+import { Like } from "typeorm";
 
 export async function saveProduct(req, res, next){
     const product = new Product(req.body);
@@ -26,10 +27,27 @@ export async function saveProduct(req, res, next){
 
 export async function getAllProducts(req, res) {
     try {
-        const { limit, offset, total } = req.query;
-        console.log(total);
+        const { limit, offset, total, search } = req.query;
         if(total == ""){
             res.status(200).send({total: await Product.count()});
+            return;
+        }
+
+        if(search){
+            const searchProducts = await Product.find({
+                take: limit,
+                skip: offset,
+                order: {
+                    name: 'ABC'
+                },
+                where: {
+                    name: Like(`%${search}%`),
+                }
+            });
+
+            //search['total'] = search.lenght;
+
+            res.status(200).send(searchProducts);
             return;
         }
 
