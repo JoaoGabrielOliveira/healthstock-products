@@ -1,4 +1,5 @@
 import express from 'express';
+import path from 'path';
 import { getAllCategories, getCategory, saveCategory } from './service/Category.js';
 import { getAllPackageTypes, getPackageType, savePackageType } from './service/PackageType.js';
 import { getAllProducts, getProduct, saveProduct } from './service/Product.js';
@@ -7,6 +8,7 @@ import { getMarketPlace, getProductFromMarketPlace } from './service/Maketplace.
 import { getAllPhotosOfSupplierCatalog, getSupplierCatalogPhoto, saveSupplierCatalogPhoto } from './service/SupplierCatalogPhoto.js';
 
 const router = express.Router();
+router.use('/static', express.static('src/public'));
 
 router.get('/marketplace', getMarketPlace);
 router.get('/marketplace/:id', getProductFromMarketPlace);

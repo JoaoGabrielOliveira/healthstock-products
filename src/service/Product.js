@@ -28,6 +28,10 @@ export async function saveProduct(req, res, next){
 export async function getAllProducts(req, res) {
     try {
         const { limit, offset, total, search } = req.query;
+        const relations = {
+            productPhoto: true
+        };
+
         if(total == ""){
             res.status(200).send({total: await Product.count()});
             return;
@@ -42,8 +46,10 @@ export async function getAllProducts(req, res) {
                 },
                 where: {
                     name: Like(`%${search}%`),
-                }
+                },
+                relations: relations
             });
+            
 
             res.status(200).send(searchProducts);
             return;
@@ -51,7 +57,8 @@ export async function getAllProducts(req, res) {
 
         const allProducts = await Product.find({
             take: limit,
-            skip: offset
+            skip: offset,
+            relations: relations
         });
 
         SendEvent(`Pegou todas as categoria com sucesso!`);

@@ -27,7 +27,8 @@ export const Schema = new EntitySchema({
     relations: {
         product: {
             type: 'one-to-one',
-            target: 'Product'
-          },
+            target: 'Product',
+            nullable: false
+        },
     }
 })
