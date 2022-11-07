@@ -1,8 +1,8 @@
 import express from 'express';
-import path from 'path';
+import fileUpload from 'express-fileupload';
 import { getAllCategories, getCategory, saveCategory } from './service/Category.js';
 import { getAllPackageTypes, getPackageType, savePackageType } from './service/PackageType.js';
-import { getAllProducts, getProduct, saveProduct } from './service/Product.js';
+import { getAllProducts, getProduct, saveProduct, uploadPhoto } from './service/Product.js';
 import { getAllSuppliersCatalog, getSupplierCatalog, saveSupplierCatalog } from './service/SupplierCatalog.js';
 import { getMarketPlace, getProductFromMarketPlace } from './service/Maketplace.js';
 import { getAllPhotosOfSupplierCatalog, getSupplierCatalogPhoto, saveSupplierCatalogPhoto } from './service/SupplierCatalogPhoto.js';
@@ -31,6 +31,9 @@ router.post('/suppliercatalog', saveSupplierCatalog);
 router.post( '/suppliercatalog/:id/photos', saveSupplierCatalogPhoto);
 router.get( '/suppliercatalog/:id/photos', getAllPhotosOfSupplierCatalog);
 router.get( '/suppliercatalog/:id/photos/:photoId', getSupplierCatalogPhoto);
+
+router.use(fileUpload())
+router.post('/product/:id/profile', uploadPhoto);
 
 
 export default router;
