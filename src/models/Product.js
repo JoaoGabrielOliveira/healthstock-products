@@ -2,7 +2,7 @@ import { BaseEntity, EntitySchema } from "typeorm";
 import Category from "./Category.js";
 
 export default class Product extends BaseEntity{
-    id; name; description; category;
+    id; name; description; category; productPhoto;
 
     constructor(body){
         super();
