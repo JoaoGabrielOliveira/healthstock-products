@@ -1,6 +1,6 @@
 import Product from "../models/Product.js";
-import { SendEvent } from '../config/index.js';
-import Category from "../models/Category.js";
+import ProductPhoto from '../models/ProductPhoto.js';
+import { Enviroment, SendEvent } from '../config/index.js';
 import { Like } from "typeorm";
 
 export async function saveProduct(req, res, next){
@@ -78,4 +78,47 @@ export async function getProduct(req, res) {
         SendEvent("Erro ao pegar Produto", error, 'error');
         res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
     }
+}
+
+export async function uploadPhoto(req, res){
+    if (!req.files || Object.keys(req.files).length === 0) {
+        SendEvent(`Não há fotos para serem salvas!`, {}, 'error');
+        return res.status(400).send('Não há fotos para serem salvas!');
+    }
+
+    let photoFile = req.files.photo1;
+
+    try {
+        let productPhoto = new ProductPhoto();
+        productPhoto.path = savePhotoStrategy(photoFile, req.params.id);
+        await productPhoto.save();
+        SendEvent("Imagem para Produto id=" + req.params.id + " foi salva com sucesso!", productPhoto);
+        
+        SendEvent("Atualizando Produto id=" + req.params.id + " para receber imagem!", {});
+        let product = await Product.findOneBy({id: req.params.id});
+        product.productPhoto = productPhoto;
+        await product.save();
+
+        SendEvent("Produto id=" + req.params.id + " foi atualizado com sucesso!", {});
+
+        res.status(201).send(productPhoto);
+    } catch (error) {
+        SendEvent("Erro ao salvar imagem para Produto id=" + req.params.id, error, 'error');
+        res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
+    }
+
+}
+function savePhotoStrategy(photo, id, path = Enviroment.PHOTO_PATH){
+    let uploadPath = path + 'product_' + id + "." + getExtensionOfFile(photo);
+    photo.mv(uploadPath, (error) => {});
+    return uploadPath;
+}
+
+function getExtensionOfFile(photo){
+    return photo.name.split('.')[1];
+}
+
+
+function createdTagImg(data, mimetype){
+    return "<img src=" + "data:"+ mimetype + ";base64," + Buffer.from(data).toString('base64') +" />";
 }
