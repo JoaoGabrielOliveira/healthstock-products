@@ -24,5 +24,6 @@ StartDatabase();
 
 app.listen(env.PORT, env.HOST, () => {
     console.log("Iniciando HealthStock Products: ", `http://${env.HOST}:${env.PORT}`);
+    console.log(env.PHOTO_PATH);
 })
 
