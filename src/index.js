@@ -22,8 +22,7 @@ app.use('/', router);
 
 StartDatabase();
 
-app.listen(env.PORT, env.HOST, () => {
-    console.log("Iniciando HealthStock Products: ", `http://${env.HOST}:${env.PORT}`);
-    console.log(env.PHOTO_PATH);
+app.listen(env.PORT, env.HOST.split("//")[1], () => {
+    console.log("Iniciando HealthStock Products: ", `${env.HOST}:${env.PORT}`);
 })
 
