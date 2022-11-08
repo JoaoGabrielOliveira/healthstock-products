@@ -2,23 +2,19 @@ import Product from "../models/Product.js";
 import ProductPhoto from '../models/ProductPhoto.js';
 import { Enviroment, SendEvent } from '../config/index.js';
 import { Like } from "typeorm";
+import ProductErrorHandler from "../exception/ProductErrorHandler.js";
 
 export async function saveProduct(req, res, next){
     const product = new Product(req.body);
     try {
-        await SendEvent("Salvando um novo catalgo");
+        await SendEvent("Salvando um novo produto");
         await product.save();
-        SendEvent("Catalgo salvo com sucesso!", product);
+        SendEvent(`Produto '${product.name}' salvo com sucesso!`, product);
         res.status(201).send(product);
     } catch (error) {
-        if(error.code == 'SQLITE_CONSTRAINT'){
-            let message = `Produto '${product.name}' já existe no Banco de dados e não pode ser cadastrado novamente!`;
-            SendEvent(message, product, 'warn');
-            res.status(400).send({message: message});
-        } else {
-            SendEvent("Erro ao salvar Produto", error, 'error');
-            res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
-        }
+        let responseError = ProductErrorHandler.handler(error, product);
+        SendEvent("Erro ao salvar Produto", error, 'error');
+        res.status(responseError.status).send({message: responseError.message});
 
     } finally {
         next();
@@ -37,7 +33,7 @@ export async function getAllProducts(req, res) {
             return;
         }
 
-        if(search){
+        if(search != ""){
             const searchProducts = await Product.findAndCount({
                 take: limit,
                 skip: offset,
@@ -86,7 +82,7 @@ export async function uploadPhoto(req, res){
         return res.status(400).send('Não há fotos para serem salvas!');
     }
 
-    let photoFile = req.files.photo1;
+    let photoFile = req.files.photo;
 
     try {
         let productPhoto = new ProductPhoto();
@@ -115,7 +111,7 @@ function savePhotoStrategy(photo, id, path = Enviroment.PHOTO_PATH){
 }
 
 function getExtensionOfFile(photo){
-    return photo.name.split('.')[1];
+    return photo.name?.split('.')[1];
 }
 
 
