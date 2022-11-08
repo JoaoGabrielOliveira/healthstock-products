@@ -6,6 +6,7 @@ import SupplierCatalogPhoto from "./SupplierCatalogPhoto.js";
 export default class SupplierCatalog extends BaseEntity{
     id; name; description; photos;
     productId; supplierId; packageTypeId; profilePhotoId;
+    product; supplier; packageType;
 
     constructor(body){
         super();
@@ -13,8 +14,8 @@ export default class SupplierCatalog extends BaseEntity{
         this.description = body?.description;
         this.supplierId = body?.supplierId;
 
-        this.productId = body?.productId;
-        this.packageTypeId = body?.packageTypeId;
+        this.product = body?.productId;
+        this.packageType = body?.packageTypeId;
     }
 
     getPhotos(){
@@ -55,19 +56,22 @@ export const Schema = new EntitySchema({
     relations: {
         product: {
             type: 'many-to-one',
-            target: 'Product'
+            target: 'Product',
+            nullable: false,
         },
         packageType: {
             type: 'many-to-one',
             target: 'PackageType',
             joinColumn: {
                 name: 'packageTypeId'
-            }
+            },
+            nullable: false,
         },
         supplierCatalogPhotos: {
             type: 'many-to-one',
             target: 'SupplierCatalogPhoto',
-            inverseSide: 'supplierCatalogPhoto'
+            inverseSide: 'supplierCatalogPhoto',
+            nullable: true,
         }
     }
 })

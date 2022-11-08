@@ -2,15 +2,14 @@ import { BaseEntity, EntitySchema } from "typeorm";
 import SupplierCatalog from "./SupplierCatalog.js";
 
 export default class SupplierCatalogPhoto extends BaseEntity{
-    id; title; supplierCatalog; path; supplierCatalogId;
+    id; title; supplierCatalog; path;
+    supplierCatalogId;
     constructor(body){
         super();
         this.id = body?.id;
         this.title = body?.title;
         this.path = body?.path;
-        this.supplierCatalogId = body?.supplierCatalogId;
-        //this.supplierCatalog = new SupplierCatalog({ id: body?.supplierCatalogId});
-
+        this.supplierCatalog = body?.supplierCatalogId;
     }
 }
 
@@ -31,16 +30,17 @@ export const Schema = new EntitySchema({
         },
         path: {
             type: 'text',
-            nullable: true,
+            nullable: false,
         }
     },
     relations: {
         supplierCatalog: {
-            type: 'many-to-one',
+            type: 'one-to-many',
             target: 'SupplierCatalog',
             joinColumn: {
                 name:"supplierCatalogId"
-            }
+            },
+            nullable: false,
           },
     }
 })
