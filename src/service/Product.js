@@ -33,7 +33,7 @@ export async function getAllProducts(req, res) {
             return;
         }
 
-        if(search != ""){
+        if(search){
             const searchProducts = await Product.findAndCount({
                 take: limit,
                 skip: offset,
@@ -41,7 +41,7 @@ export async function getAllProducts(req, res) {
                     name: 'ABC'
                 },
                 where: {
-                    name: Like(`%${search}%`),
+                    name: Like(`%${search.trim()}%`),
                 },
                 relations: relations
             });
