@@ -1,8 +1,9 @@
 import Product from "../models/Product.js";
 import ProductPhoto from '../models/ProductPhoto.js';
-import { Enviroment, SendEvent } from '../config/index.js';
+import { SendEvent } from '../config/index.js';
 import { Like } from "typeorm";
 import ProductErrorHandler from "../exception/ProductErrorHandler.js";
+import SavePhoto from "../strategy/SavePhoto.js";
 
 export async function saveProduct(req, res, next){
     const product = new Product(req.body);
@@ -86,7 +87,8 @@ export async function uploadPhoto(req, res){
 
     try {
         let productPhoto = new ProductPhoto();
-        productPhoto.path = savePhotoStrategy(photoFile, req.params.id);
+        
+        productPhoto.path = SavePhoto.SINGLETON.save(photoFile, req.params.id);
         await productPhoto.save();
         SendEvent("Imagem para Produto id=" + req.params.id + " foi salva com sucesso!", productPhoto);
         
@@ -103,18 +105,4 @@ export async function uploadPhoto(req, res){
         res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
     }
 
-}
-function savePhotoStrategy(photo, id, path = Enviroment.PHOTO_PATH){
-    let uploadPath = path + 'product_' + id + "." + getExtensionOfFile(photo);
-    photo.mv(uploadPath, (error) => {});
-    return uploadPath;
-}
-
-function getExtensionOfFile(photo){
-    return photo.name?.split('.')[1];
-}
-
-
-function createdTagImg(data, mimetype){
-    return "<img src=" + "data:"+ mimetype + ";base64," + Buffer.from(data).toString('base64') +" />";
 }
