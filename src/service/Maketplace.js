@@ -5,7 +5,38 @@ import SupplierCatalog from "../models/SupplierCatalog.js";
 export async function getMarketPlace(req, res, next){
     try {
         SendEvent("Pegando produtos dos catalogos...");
-        const catalog = await SupplierCatalog.find({select: { id:true, supplierId:true, name: true, description: true }, relations: {supplierCatalogPhotos: true}});
+        const { limit, offset, total, search } = req.query;
+
+        let catalog = [];
+
+        const relations = {
+            photo: true
+        };
+
+        if(total == ""){
+            res.status(200).send({total: await SupplierCatalog.count()});
+            return;
+        }
+
+        if(search){
+            const searchProducts = await SupplierCatalog.findAndCount({
+                take: limit,
+                skip: offset,
+                order: {
+                    name: 'ABC'
+                },
+                where: {
+                    name: Like(`%${search.trim()}%`),
+                },
+                relations: relations
+            });
+            
+
+            res.status(200).send(searchProducts);
+            return;
+        }
+
+        catalog = await SupplierCatalog.find({select: { id:true, supplierId:true, name: true, description: true }, relations: {photo: true}});
         SendEvent(`Pegou todos os catalogos com sucesso!`);
         res.status(200).send(catalog);
     } catch (error) {
@@ -24,8 +55,10 @@ export async function getProductFromMarketPlace(req, res, next){
     try {
         SendEvent("Pegando produtos dos catalogos...");
 
-        const catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true }, where: {id: req.params.id}});
-        catalog.photos = await S.find({ select:{urlData:true, blobData:true, title:true}, loadRelationIds:true, where: {supplierCatalog : catalog.id}});
+        const catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true },
+            where: {id: req.params.id},
+            relations: { photos: true, product: true}
+        });
 
         SendEvent(`Pegou o catalogo ${catalog.id} com sucesso!`);
 
