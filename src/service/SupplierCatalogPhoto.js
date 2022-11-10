@@ -1,29 +1,51 @@
 
 import { SendEvent } from "../config/index.js";
+import SupplierCatalogErrorHandler from "../exception/SupplierCatalogErrorHandler.js";
 import SupplierCatalogPhoto from "../models/SupplierCatalogPhoto.js";
+import SavePhoto from '../strategy/SavePhoto.js';
 
-export async function saveSupplierCatalogPhoto(req, res, next){
-    const supplierCatalogPhoto = new SupplierCatalogPhoto(req.body);
-    supplierCatalogPhoto.supplierCatalogId = req.params.id;
+export async function saveSupplierCatalogPhotos(req, res, next){
     try {
-        await SendEvent(`Salvando um nova foto para 'Catalogo do Fornecedor ${req.params.id}`);
-        
-        await supplierCatalogPhoto.save();
-        SendEvent(`Foto para 'Catalogo do Fornecedor ${req.params.id}' foi salvo com sucesso!`, supplierCatalogPhoto);
-        res.status(201).send(supplierCatalogPhoto);
-    } catch (error) {
-        if(error.code == 'SQLITE_CONSTRAINT'){
-            let message = "Erro com body da requisão!";
-            SendEvent(message, supplierCatalogPhoto, 'warn');
-            res.status(400).send({message: message, error: error.message});
-        } else {
-            SendEvent(`Erro ao salvar uma foto para 'Catalogo do Fornecedor ${req.params.id}'`, error, 'error');
-            res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
+        await SendEvent(`Iniciando: Salvando um nova foto para 'Catalogo do Fornecedor ${req.params.id}`);
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            SendEvent(`Não há fotos para serem salvas!`, {}, 'error');
+            return res.status(400).send('Não há fotos para serem salvas!');
         }
 
+        let photos = [];
+        for(let i = 0; i < Number.parseInt(req.body.length); i++){
+            photos.push(req.files['photo' + i]);
+        }
+
+        let supplierCatalogPhotos = [];
+
+        for(let i = 0; i < photos.length; i++){
+            supplierCatalogPhotos.push(await saveCatalogPhoto(photos[i], req.params.id, i));
+        }
+        
+        SendEvent(`Fotos para 'Catalogo do Fornecedor ${req.params.id}' foram salvas com sucesso!`, supplierCatalogPhotos);
+        res.status(201).send(supplierCatalogPhotos);
+    } catch (error) {
+        let { message, status} = SupplierCatalogErrorHandler.handler(error);
+        SendEvent(message, error, 'error')
+        res.status(status).send({message: message, error: error.message});
     } finally {
         next();
     }
+}
+
+async function saveCatalogPhoto(photo, id, index = 0){
+    let supplierCatalogPhoto = new SupplierCatalogPhoto({supplierCatalogId: id}); 
+    try {
+        supplierCatalogPhoto.path = SavePhoto.SINGLETON.save(`supplier_catalog_${id}_${index}`, photo);
+        await supplierCatalogPhoto.save();
+    } catch (error) {
+        throw new SupplierCatalogErrorHandler(error, supplierCatalogPhoto);
+    }
+
+    SendEvent(`Foto para 'Catalogo do Fornecedor ${id}' foi salvo com sucesso!`, supplierCatalogPhoto);
+    return supplierCatalogPhoto;
 }
 
 export async function getAllPhotosOfSupplierCatalog(req, res) {
@@ -32,7 +54,6 @@ export async function getAllPhotosOfSupplierCatalog(req, res) {
         SendEvent(`Pegou todas as fotos do 'Catalogo do Fornecedor ${req.params.id}' com sucesso!`);
         res.status(200).send(allSupplierCatalogPhotos);
     } catch (error) {
-        console.error(error);
         SendEvent(`Erro ao pegar as fotos 'Catalogo do Fornecedor ${req.params.id}'`, error, 'error');
         res.status(500).send(error);
     }
