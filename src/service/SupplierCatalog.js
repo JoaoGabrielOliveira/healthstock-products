@@ -45,5 +45,4 @@ export async function getSupplierCatalog(req, res) {
         SendEvent("Erro ao pegar 'Catalogo de Fornecedor'", error, 'error');
         res.status(500).send({message: "Aconteceu um erro inesperado", error: error.message});
     }
-}    
-    
+}   

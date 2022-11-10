@@ -5,14 +5,14 @@ import SupplierCatalogPhoto from "./SupplierCatalogPhoto.js";
 
 export default class SupplierCatalog extends BaseEntity{
     id; name; description; photos; photo;
-    product; supplier; packageType;
+    product; supplierId; packageType;
 
     constructor(body){
         super();
         this.name = body?.name;
         this.description = body?.description;
 
-        this.supplier = body?.supplierId;
+        this.supplierId = body?.supplierId;
         this.product = body?.productId;
         this.packageType = body?.packageTypeId;
     }
