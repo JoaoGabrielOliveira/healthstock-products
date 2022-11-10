@@ -1,6 +1,7 @@
 
 import { SendEvent } from "../config/index.js";
 import SupplierCatalogErrorHandler from "../exception/SupplierCatalogErrorHandler.js";
+import SupplierCatalog from "../models/SupplierCatalog.js";
 import SupplierCatalogPhoto from "../models/SupplierCatalogPhoto.js";
 import SavePhoto from '../strategy/SavePhoto.js';
 
@@ -40,12 +41,20 @@ async function saveCatalogPhoto(photo, id, index = 0){
     try {
         supplierCatalogPhoto.path = SavePhoto.SINGLETON.save(`supplier_catalog_${id}_${index}`, photo);
         await supplierCatalogPhoto.save();
+        if(index === 0) setProfilePhoto(id, supplierCatalogPhoto.id);
     } catch (error) {
         throw new SupplierCatalogErrorHandler(error, supplierCatalogPhoto);
     }
 
     SendEvent(`Foto para 'Catalogo do Fornecedor ${id}' foi salvo com sucesso!`, supplierCatalogPhoto);
     return supplierCatalogPhoto;
+}
+
+function setProfilePhoto(catalogId, photoId){
+    SupplierCatalog.findOneBy({id: catalogId}).then( catalog => {
+        catalog.photo = photoId;
+        catalog.save();
+    });
 }
 
 export async function getAllPhotosOfSupplierCatalog(req, res) {

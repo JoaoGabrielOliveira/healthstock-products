@@ -4,7 +4,7 @@ import Product from './Product.js';
 import SupplierCatalogPhoto from "./SupplierCatalogPhoto.js";
 
 export default class SupplierCatalog extends BaseEntity{
-    id; name; description; photos;
+    id; name; description; photos; photo;
     product; supplier; packageType;
 
     constructor(body){
@@ -61,6 +61,11 @@ export const Schema = new EntitySchema({
             type: 'one-to-many',
             target: 'SupplierCatalogPhoto',
             nullable: true,
+        },
+        photo: {
+            type: 'many-to-one',
+            target: 'SupplierCatalogPhoto',
+            nullable: true
         }
     }
 })
