@@ -41,6 +41,11 @@ export const Schema = new EntitySchema({
         supplierId: {
             type: 'integer',
             nullable: false
+        },
+        price: {
+            type: 'decimal',
+            nullable: false,
+            default: 11.99
         }
     },
     relations: {

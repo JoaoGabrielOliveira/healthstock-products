@@ -1,5 +1,4 @@
 import { SendEvent } from "../config/index.js";
-import SupplierCatalogPhoto from "../models/SupplierCatalogPhoto.js";
 import SupplierCatalog from "../models/SupplierCatalog.js";
 
 export async function getMarketPlace(req, res, next){
@@ -13,6 +12,8 @@ export async function getMarketPlace(req, res, next){
             photo: true
         };
 
+        const select = { id:true, name: true, price: true };
+
         if(total == ""){
             res.status(200).send({total: await SupplierCatalog.count()});
             return;
@@ -22,6 +23,7 @@ export async function getMarketPlace(req, res, next){
             const searchProducts = await SupplierCatalog.findAndCount({
                 take: limit,
                 skip: offset,
+                select: select,
                 order: {
                     name: 'ABC'
                 },
@@ -36,7 +38,7 @@ export async function getMarketPlace(req, res, next){
             return;
         }
 
-        catalog = await SupplierCatalog.find({select: { id:true, supplierId:true, name: true, description: true }, relations: {photo: true}});
+        catalog = await SupplierCatalog.find({select: select, relations: relations});
         SendEvent(`Pegou todos os catalogos com sucesso!`);
         res.status(200).send(catalog);
     } catch (error) {
