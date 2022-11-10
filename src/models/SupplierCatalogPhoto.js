@@ -1,9 +1,8 @@
 import { BaseEntity, EntitySchema } from "typeorm";
-import SupplierCatalog from "./SupplierCatalog.js";
 
 export default class SupplierCatalogPhoto extends BaseEntity{
     id; title; supplierCatalog; path;
-    supplierCatalogId;
+    
     constructor(body){
         super();
         this.id = body?.id;
@@ -31,11 +30,12 @@ export const Schema = new EntitySchema({
         path: {
             type: 'text',
             nullable: false,
+            unique: true
         }
     },
     relations: {
         supplierCatalog: {
-            type: 'one-to-many',
+            type: 'many-to-one',
             target: 'SupplierCatalog',
             joinColumn: {
                 name:"supplierCatalogId"

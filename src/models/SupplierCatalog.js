@@ -5,26 +5,16 @@ import SupplierCatalogPhoto from "./SupplierCatalogPhoto.js";
 
 export default class SupplierCatalog extends BaseEntity{
     id; name; description; photos;
-    productId; supplierId; packageTypeId; profilePhotoId;
     product; supplier; packageType;
 
     constructor(body){
         super();
         this.name = body?.name;
         this.description = body?.description;
-        this.supplierId = body?.supplierId;
 
+        this.supplier = body?.supplierId;
         this.product = body?.productId;
         this.packageType = body?.packageTypeId;
-    }
-
-    getPhotos(){
-        if(!this.photos)
-            this.photos = SupplierCatalogPhoto.find({where: {
-                supplierCatalog: this
-            }});
-
-        return this.photos;
     }
 }
 
@@ -67,10 +57,9 @@ export const Schema = new EntitySchema({
             },
             nullable: false,
         },
-        supplierCatalogPhotos: {
-            type: 'many-to-one',
+        photos: {
+            type: 'one-to-many',
             target: 'SupplierCatalogPhoto',
-            inverseSide: 'supplierCatalogPhoto',
             nullable: true,
         }
     }
