@@ -3,9 +3,9 @@ export default class SavePhotoSrategy {
     /**
      * 
      * @param {File} photo 
-     * @param {number} id 
+     * @param {string} fileName 
      */
-    save(photo, id){
+    save(fileName, photo){
         throw new Error("Not implemented");
     }
 }

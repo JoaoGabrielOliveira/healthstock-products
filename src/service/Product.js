@@ -87,8 +87,8 @@ export async function uploadPhoto(req, res){
 
     try {
         let productPhoto = new ProductPhoto();
-        
-        productPhoto.path = SavePhoto.SINGLETON.save(photoFile, req.params.id);
+        let name = 'product_' + req.params.id;
+        productPhoto.path = SavePhoto.SINGLETON.save(name, photoFile);
         await productPhoto.save();
         SendEvent("Imagem para Produto id=" + req.params.id + " foi salva com sucesso!", productPhoto);
         
