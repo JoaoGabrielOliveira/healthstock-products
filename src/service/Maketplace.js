@@ -1,5 +1,6 @@
 import { SendEvent } from "../config/index.js";
 import SupplierCatalog from "../models/SupplierCatalog.js";
+import SupplierCatalogPhoto from "../models/SupplierCatalogPhoto.js";
 
 export async function getMarketPlace(req, res, next){
     try {
@@ -37,8 +38,9 @@ export async function getMarketPlace(req, res, next){
             res.status(200).send(searchProducts);
             return;
         }
-
+        
         catalog = await SupplierCatalog.find({select: select, relations: relations});
+
         SendEvent(`Pegou todos os catalogos com sucesso!`);
         res.status(200).send(catalog);
     } catch (error) {
@@ -57,16 +59,18 @@ export async function getProductFromMarketPlace(req, res, next){
     try {
         SendEvent("Pegando produtos dos catalogos...");
 
-        const catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true },
+        let catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true },
             where: {id: req.params.id},
-            relations: { photos: true, product: true}
+            relations: { product: true}
         });
+
+        catalog.photos = await SupplierCatalogPhoto.find({select:{ title: true, path: true}, where: { supplierCatalog: catalog}});
 
         SendEvent(`Pegou o catalogo ${catalog.id} com sucesso!`);
 
         res.status(200).send(catalog);
     } catch (error) {
         SendEvent("Erro ao pegar catalogo " + req.params.id, error, 'error');
-        res.status(500).send(error);
+        res.status(500).send({message: "Aconteceu um erro inesperado!", error: error.message});
     } finally { next() }
 }
