@@ -41,7 +41,7 @@ async function saveCatalogPhoto(photo, id, index = 0){
     try {
         supplierCatalogPhoto.path = SavePhoto.SINGLETON.save(`supplier_catalog_${id}_${index}`, photo);
         await supplierCatalogPhoto.save();
-        if(index === 0) setProfilePhoto(id, supplierCatalogPhoto.id);
+        if(index == 0) setProfilePhoto(id, supplierCatalogPhoto.id);
     } catch (error) {
         throw new SupplierCatalogErrorHandler(error, supplierCatalogPhoto);
     }
