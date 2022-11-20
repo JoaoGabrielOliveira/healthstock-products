@@ -11,7 +11,7 @@ const router = express.Router();
 router.use('/static', express.static('src/public'));
 
 router.get('/marketplace', getMarketPlace);
-router.get('/marketplace/:id', getProductFromMarketPlace);
+router.get('/marketplace/:name', getProductFromMarketPlace);
 
 router.post('/category', saveCategory);
 router.get( '/category', getAllCategories);

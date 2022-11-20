@@ -61,7 +61,7 @@ export async function getProductFromMarketPlace(req, res, next){
         SendEvent("Pegando produtos dos catalogos...");
 
         let catalog = await SupplierCatalog.findOne({select: { id:true, supplierId:true, name: true, description: true, price: true },
-            where: {id: req.params.id},
+            where: {name: req.params.name},
             relations: { product: true}
         });
 
