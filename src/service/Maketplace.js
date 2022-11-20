@@ -14,7 +14,7 @@ export async function getMarketPlace(req, res, next){
             photo: true
         };
 
-        const select = { id:true, name: true, price: true };
+        const select = { id:true, name: true, price: true, description: true };
 
         if(total == ""){
             res.status(200).send({total: await SupplierCatalog.count()});
@@ -30,7 +30,7 @@ export async function getMarketPlace(req, res, next){
                     name: 'ABC'
                 },
                 where: {
-                    name: Like(`%${search.trim()}%`),
+                    name: Like(`%${search.trim().trimStart()}`),
                 },
                 relations: relations
             });
