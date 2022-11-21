@@ -65,7 +65,8 @@ export async function getProductFromMarketPlace(req, res, next){
             relations: { product: true}
         });
 
-        catalog.photos = await SupplierCatalogPhoto.find({select:{ title: true, path: true}, where: { supplierCatalog: catalog}});
+        const photos = await SupplierCatalogPhoto.find({select:{ title: true, path: true}, where: { supplierCatalog: catalog}});
+        catalog.photos = photos ?? [];
 
         SendEvent(`Pegou o catalogo ${catalog.id} com sucesso!`);
 
