@@ -30,7 +30,7 @@ export async function getMarketPlace(req, res, next){
                     name: 'ABC'
                 },
                 where: {
-                    name: Like(`%${search.trim().trimStart()}`),
+                    name: Like(`%${search.trim().trimStart()}%`),
                 },
                 relations: relations
             });
@@ -40,7 +40,7 @@ export async function getMarketPlace(req, res, next){
             return;
         }
         
-        catalog = await SupplierCatalog.find({select: select, relations: relations});
+        catalog = await SupplierCatalog.find({select: select, relations: relations, take: limit, skip: offset});
 
         SendEvent(`Pegou todos os catalogos com sucesso!`);
         res.status(200).send(catalog);
